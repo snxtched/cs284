@@ -1,0 +1,55 @@
+ private void reheap(Stack<Node<E>> sequence, Node<E> n) {
+        while (!sequence.isEmpty()){ //stack not empty
+            Node<E> parent = sequence.pop(); //first element
+            if(parent.priority < n.priority) { //parent P is LESS than what we are trying to add
+                if (parent.priority < n.priority) { //parent P is LESS than what we are trying to add
+                    if (parent.left == n) {
+                        n = parent.rotateRight();
+                    } else {
+                        n = parent.rotateLeft();
+                    }
+                    if(!sequence.isEmpty()){
+                        if(sequence.peek().left == n)
+                            sequence.peek().left = n;
+                        else{
+                            sequence.peek().right = n;
+                        }
+                    }
+                    else {
+                        root = n;
+                    }
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+
+    public boolean add(E key, int priority) {
+        if (root == null) {
+            root = new Node(key, priority);
+            return true;
+        }
+        Node<E> current = root;
+        Stack<Node<E>> sequence = new Stack<>();
+        while (current != null) {
+            sequence.push(current);
+            if (priority > current.priority) {
+                if (current.left == null) {
+                    current.left = new Node(key, priority);
+                    reheap(sequence, current.left);
+                    return true;
+                }
+                current = current.left;
+            } else {
+                if (current.right == null) {
+                    current.right = new Node(key, priority);
+                    reheap(sequence, current.right);
+                    return true;
+                }
+                current = current.right;
+            }
+        }
+        return false;
+    }
